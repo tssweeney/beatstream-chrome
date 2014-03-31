@@ -3,7 +3,6 @@
   "name": "Official BeatStream Extension",
   "description": "This extension enables posting to BeatStream from any webpage.",
   "version": "2.4",
-  "default_locale": "en",
   "author": "Tim Sweeney",
   "homepage_url": "http://www.beatstream.co",
   "icons" : {

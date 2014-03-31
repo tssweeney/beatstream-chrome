@@ -66,6 +66,7 @@ console.log("Initiating Post...");
           ui.tracks[i].bsid = i;
          option += '<option value="'+i+'"><div><img src="'+ui.tracks[i].icon100+'">' + ui.tracks[i].name + '</div></option>';
       }
+      ui.searchBox.show();
       ui.trackSelection.html("");
       ui.trackSelection.append(option);
       ui.trackSelection.show();
@@ -136,9 +137,35 @@ console.log("Getting Tracks...")
     });
   };
 
+  // var _checkAuth = function(w, callback) {
+  //   if (w.document.URL.indexOf("feed") !== -1) {
+  //     w.close();
+  //     callback({success:true});
+  //   } else {
+  //     setTimeout(_checkAuth(w, callback), 1000);
+  //   }
+  // }
+
   var _authenticate = function(callback){
-console.log("Authenticating...");
-    callback({success:true});
+    // var w = window.open("http://beta.beatstream.co/", "SignIn", "width=780,height=410");
+    // w.focus();
+    // setTimeout(_checkAuth(w, callback), 1000);
+    $.ajax({
+      type: "GET",
+      url: url + "posts",
+      crossDomain: true,
+      success: function(res){
+        if (res && res[0] && res[0].id) {
+          callback({success: true});
+        } else {
+          callback({success: false});
+        }
+      },
+      error: function(xhr, text, err){
+        callback({success: false, errors: text});
+      },
+      dataType: "json"
+    });
   };
 
   (function main(){
@@ -146,7 +173,7 @@ console.log("Authenticating...");
       if (res && res.success) {
         _setupUI();
       } else {
-        options.uiDIV.innerText("You must be logged in to post");
+        options.uiDIV.html("You must be logged in to post. Please log in here: <a href='http://beta.beatstream.co/' target='_blank' >beatstream.co</a>");
       }
     });
   })(this);
