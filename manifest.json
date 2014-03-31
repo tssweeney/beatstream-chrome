@@ -1,8 +1,11 @@
 {
   "manifest_version": 2,
-  "name": "BeatStream",
-  "description": "This extension embeds BeatStream into life.",
-  "version": "2.1",
+  "name": "Official BeatStream Extension",
+  "description": "This extension enables posting to BeatStream from any webpage.",
+  "version": "2.4",
+  "default_locale": "en",
+  "author": "Tim Sweeney",
+  "homepage_url": "http://www.beatstream.co",
   "icons" : {
     "128": "browser_action/images/icon128.png"
   },
