@@ -66,7 +66,6 @@ console.log("Initiating Post...");
           ui.tracks[i].bsid = i;
          option += '<option value="'+i+'"><div><img src="'+ui.tracks[i].icon100+'">' + ui.tracks[i].name + '</div></option>';
       }
-      ui.searchBox.show();
       ui.trackSelection.html("");
       ui.trackSelection.append(option);
       ui.trackSelection.show();

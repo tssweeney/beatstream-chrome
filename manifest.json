@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "Official BeatStream Extension",
-  "description": "This extension enables posting to BeatStream from any webpage.",
-  "version": "2.4",
+  "name": "Official Beatstream Extension",
+  "description": "This extension enables posting to Beatstream from any webpage.",
+  "version": "2.5",
   "author": "Tim Sweeney",
   "homepage_url": "http://www.beatstream.co",
   "icons" : {
