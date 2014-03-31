@@ -34,6 +34,26 @@ console.log("Setting Up UI...");
       ui.errorBox.text(error);
     };
 
+    var _getTrack = function(obj, callback){
+      if (obj.provider === "itunes") {
+        $.ajax({
+          type: "POST",
+          url: url + "match",
+          crossDomain: true,
+          data: {id: obj.itunes_id},
+          success: function(res){
+            callback({success: true, track: res});
+          },
+          error: function(xhr, text, err){
+            callback({success: false, errors: text});
+          },
+          dataType: "json"
+        });
+      } else {
+        callback({success:true, track:obj});
+      }
+    };
+
     ui.postBtn.click(function(){
 console.log("Initiating Post...");
       var t = {};
@@ -44,15 +64,23 @@ console.log("Initiating Post...");
           t = ui.tracks[i];
         }
       }
+      t.bsid = null;
+console.log(t);
       if (t) {
-        _createPost({
-          message: ui.messageBox.val(),
-          track: t
-        },function(res){
+        _getTrack(t, function(res){
           if (res && res.success) {
-            window.close();
+            _createPost({
+              message: ui.messageBox.val(),
+              track: res.track
+            },function(res){
+              if (res && res.success) {
+                window.close();
+              } else {
+                _postError("BeatStream Post Error.");
+              }
+            });
           } else {
-            _postError("Internal Error.");
+            _postError("BeatStream Match Error.");
           }
         });
       } else {
@@ -63,8 +91,8 @@ console.log("Initiating Post...");
     _refreshTracks = function(){
       var option = '';
       for (i = 0; i < ui.tracks.length; i++){
-          ui.tracks[i].bsid = i;
-         option += '<option value="'+i+'"><div><img src="'+ui.tracks[i].icon100+'">' + ui.tracks[i].name + '</div></option>';
+        ui.tracks[i].bsid = i;
+        option += '<option value="'+i+'"><div><img src="'+ui.tracks[i].icon100+'">' + ui.tracks[i].name + '</div></option>';
       }
       ui.trackSelection.html("");
       ui.trackSelection.append(option);
@@ -72,7 +100,6 @@ console.log("Initiating Post...");
       ui.messageBox.hide();
       ui.postBtn.hide();
       ui.errorBox.text('');
-      ui.searchBox.val('');
     };
 
     ui.trackSelection.change(function(){
