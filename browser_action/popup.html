@@ -2,11 +2,18 @@
 <html>
   <head>
     <title>Getting Started Extension's Popup</title>
-    <script src="jquery.min.js"></script>
-    <script src="wait.js"></script>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/jquery.min.js"></script>
   </head>
   <body>
-    <input type="text" id="beatMessage" placeholder="Enter your message."></input>
+    <div id="beatStream">
+      <input id="searchBox" type="search" class="form-control" placeholder="What are you listening to?">
+      <select id="trackSelection" multiple class="form-control">
+      </select>
+      <input id="messageBox" type="search" class="form-control" placeholder="Tell people why you're posting this song :)">
+      <span><span id="errorBox"></span><button id="postBtn" type="submit" class="btn btn-danger pull-right">Post to BeatStream</button></span>
+    </div>
     <script src="beatstream.js"></script>
   </body>
 

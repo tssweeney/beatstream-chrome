@@ -1,118 +1,159 @@
-function BeatStream(input){
-  var self = this;
-  var settings = {
-    input: null
+var BeatStream = function(options){
+  var url = "https://beta.beatstream.co/api/";
+
+  // res = {
+  //   success: Boolean,
+  //   term: String
+  // }
+  var _getSearchQueryFromHost = function(callback){
+    console.log("Getting Host Search Term...");
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, {}, function(res) {
+        callback(res);
+      });
+    });
   };
 
-  var authenticate = function(){
-    // need to do
+  var _setupUI = function(){
+console.log("Setting Up UI...");
+    var ui = {
+      main: options.uiDIV,
+      search: $(options.uiDIV.find("#searchBox")[0]),
+      trackSelection: $(options.uiDIV.find("#trackSelection")[0]),
+      messageBox: $(options.uiDIV.find("#messageBox")[0]),
+      postBtn: $(options.uiDIV.find("#postBtn")[0]),
+      errorBox: $(options.uiDIV.find("#errorBox")[0]),
+      tracks: []
+    }
+
+    ui.trackSelection.hide();
+    ui.messageBox.hide();
+    ui.postBtn.hide();
+
+    var _postError = function(error){
+      ui.errorBox.text(error);
+    };
+
+    ui.postBtn.click(function(){
+console.log("Initiating Post...");
+      var t = {};
+      var bsid = parseInt(ui.trackSelection.val()[0]);
+      ui.errorBox.val('');
+      for (var i = 0; i < ui.tracks.length; i++) {
+        if (parseInt(ui.tracks[i].bsid) === bsid) {
+          t = ui.tracks[i];
+        }
+      }
+      if (t) {
+        _createPost({
+          message: ui.messageBox.val(),
+          track: t
+        },function(res){
+          if (res && res.success) {
+            window.close();
+          } else {
+            _postError("Internal Error.");
+          }
+        });
+      } else {
+        _postError("Hmmm, we'll work on that.");
+      }
+    });
+
+    _refreshTracks = function(){
+      var option = '';
+      for (i = 0; i < ui.tracks.length; i++){
+          ui.tracks[i].bsid = i;
+         option += '<option value="'+i+'"><div><img src="'+ui.tracks[i].icon100+'">' + ui.tracks[i].name + '</div></option>';
+      }
+      ui.trackSelection.html("");
+      ui.trackSelection.append(option);
+      ui.trackSelection.show();
+      ui.messageBox.hide();
+      ui.postBtn.hide();
+      ui.errorBox.text('');
+      ui.searchBox.val('');
+    };
+
+    ui.trackSelection.change(function(){
+      ui.messageBox.show();
+      ui.postBtn.show();
+    });
+
+    ui.search.keypress(function(){
+      _getTracks($(this).val(), function(res){
+        if (res && res.success) {
+          ui.tracks = res.res;
+          _refreshTracks();
+        }
+      });
+    });
+
+    //fill in search term
+    _getSearchQueryFromHost(function(res){
+      if (res && res.success) {
+        ui.search.val(res.term);
+        _getTracks(res.term, function(res1){
+          if (res1 && res1.success) {
+            ui.tracks = res1.res;
+            _refreshTracks();
+          }
+        });
+      }
+    });
   };
 
-  // @param search term
-  // @return itunes id | 0 if error
-  var getItunesId = function(term) {
-    var itunes_id = 0;
+  var _createPost = function(post, callback){
+console.log("Posting to BeatStream...");
+    $.ajax({
+      type: "POST",
+      url: url + "posts",
+      data: post,
+      crossDomain: true,
+      success: function(res){
+        callback({success: true, res:res});
+      },
+      error: function(xhr, text, err){
+        callback({success: false, errors: text});
+      },
+      dataType: "JSON"
+    });
+  }
+
+  var _getTracks = function(searchTerm, callback){
+console.log("Getting Tracks...")
     $.ajax({
       type: "GET",
-      url: "https://itunes.apple.com/search",
-      data: {term: term},
+      url: url + "tracks?query=" + searchTerm + " ",
+      crossDomain: true,
       success: function(res){
-        itunes_id = res.results[0].trackId;
+        callback({success: true, res: res});
       },
       error: function(xhr, text, err){
-        console.log(xhr);
-        console.log(text);
-        console.log(err);
+        callback({success: false, errors: text});
       },
-      dataType: "JSON",
-      async: false
+      dataType: "json"
     });
-    return itunes_id;
   };
 
-  // @param itunes id
-  // @return track id | {id:0}
-  var trackFromItunesId = function(id){
-    var track = {id:0};
-    $.ajax({
-      type: "POST",
-      url: "http://beatstream-rails.herokuapp.com/api/match",
-      data: {id:id},
-      success: function(res){
-        track = res;
-      },
-      error: function(xhr, text, err){
-        console.log(xhr);
-        console.log(text);
-        console.log(err);
-      },
-      dataType: "JSON",
-      async: false
+  var _authenticate = function(callback){
+console.log("Authenticating...");
+    callback({success:true});
+  };
+
+  (function main(){
+    _authenticate(function(res){
+      if (res && res.success) {
+        _setupUI();
+      } else {
+        options.uiDIV.innerText("You must be logged in to post");
+      }
     });
-    return track;
-  };
-
-  // @param {
-  //  message, {id, provider}
-  // }
-  // @return true | false success
-  var createPost = function(post){
-    var success = false;
-    post.message += "\n#BeatStreamforPandora";
-    console.log(post);
-    $.ajax({
-      type: "POST",
-      url: "http://beatstream-rails.herokuapp.com/api/posts",
-      data: post,
-      success: function(res){
-        success = true;
-      },
-      error: function(xhr, text, err){
-        console.log(xhr);
-        console.log(text);
-        console.log(err);
-      },
-      dataType: "JSON",
-      async: false
-    });
-    return success;
-  };
-
-  var getMessage = function(){
-    return settings.input.val();
-  };
-
-  authenticate();
-  input.keyup(function(e) {
-    if(e.which == 13) {
-      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {}, function(res) {
-          console.log(res);
-
-          var track = trackFromItunesId(getItunesId(res.term));
-
-          var post = {
-            message: getMessage(),
-            track: {
-              id: track.id,
-              provider: track.provider
-            }
-          };
-
-          if (createPost(post)) {
-            console.log('success');
-          } else {
-            console.log('failure');
-          }
-
-          window.close();
-        });
-      });
-    }
-  });
-  settings.input = input;
+  })(this);
 };
 
-waitUntilExists("beatMessage", function(e){
-  BS = new BeatStream($("#beatMessage"));
-})
+$(function(){
+  BS = new BeatStream({
+    uiDIV: $("#beatStream")
+  });
+});

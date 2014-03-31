@@ -1,0 +1,29 @@
+html, body {
+  width: 400px;
+  margin: 0;
+  padding: 0px;
+}
+
+#beatStream {
+  width: 380px;
+  margin: 10px;
+}
+
+#trackSelection {
+  width: 100%;
+  max-height: 140px;
+  margin-bottom: 5px;
+}
+
+#searchBox, #messageBox {
+  width: 380px;
+  margin-bottom: 5px;
+};
+
+#messageBox {
+  width: 340px;
+}
+
+#postBtn {
+  margin-bottom: 5px;
+}

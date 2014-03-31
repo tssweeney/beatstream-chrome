@@ -2,28 +2,34 @@
   "manifest_version": 2,
   "name": "BeatStream",
   "description": "This extension embeds BeatStream into life.",
-  "version": "2.0",
+  "version": "2.1",
+  "icons" : {
+    "128": "browser_action/images/icon128.png"
+  },
   "permissions" : [
     "http://www.pandora.com/*",
     "http://www.youtube.com/*",
-    "http://beatstream-rails.herokuapp.com/*",
+    "http://beta.beatstream.co/*",
+    "https://beta.beatstream.co/*",
     "https://www.google.com/*",
     "https://itunes.apple.com/*",
+    "https://netdna.bootstrapcdn.com/bootstrap/*",
+    "http://i1.sndcdn.com/*",
     "activeTab",
     "tabs"
   ],
   "content_scripts": [
     {
       "matches": ["*://www.pandora.com/*"],
-      "js": ["library/jquery.min.js","content_scripts/pandora.js"]
+      "js": ["browser_action/js/jquery.min.js","content_scripts/pandora.js"]
     },
     {
       "matches": ["*://www.youtube.com/*"],
-      "js": ["library/jquery.min.js","content_scripts/youtube.js"]
+      "js": ["browser_action/js/jquery.min.js","content_scripts/youtube.js"]
     }
   ],
   "browser_action": {
-    "default_icon": "browser_action/icon.png",
+    "default_icon": "browser_action/images/icon.png",
     "default_popup": "browser_action/popup.html"
   }
 }
