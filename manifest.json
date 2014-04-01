@@ -26,6 +26,14 @@
       "js": ["browser_action/js/jquery.min.js","content_scripts/pandora.js"]
     },
     {
+      "matches": ["*://soundcloud.com/*"],
+      "js": ["browser_action/js/jquery.min.js","content_scripts/soundcloud.js"]
+    },
+    {
+      "matches": ["*://www.spotify.com/*"],
+      "js": ["browser_action/js/jquery.min.js","content_scripts/spotify.js"]
+    },
+    {
       "matches": ["*://www.youtube.com/*"],
       "js": ["browser_action/js/jquery.min.js","content_scripts/youtube.js"]
     }
