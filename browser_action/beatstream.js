@@ -1,5 +1,5 @@
 var BeatStream = function(options){
-  var url = "https://beta.beatstream.co/api/";
+  var url = "http://beta.beatstream.co/api/";
 
   // res = {
   //   success: Boolean,

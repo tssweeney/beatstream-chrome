@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Official Beatstream Extension",
   "description": "This extension enables posting to Beatstream from any webpage.",
-  "version": "2.6",
+  "version": "3.0",
   "author": "Tim Sweeney",
   "homepage_url": "http://www.beatstream.co",
   "icons" : {
@@ -13,6 +13,8 @@
     "http://www.youtube.com/*",
     "http://beta.beatstream.co/*",
     "https://beta.beatstream.co/*",
+    "http://beatstream-rails.herokuapp.com/*",
+    "https://beatstream-rails.herokuapp.com/*",
     "https://www.google.com/*",
     "https://itunes.apple.com/*",
     "https://netdna.bootstrapcdn.com/bootstrap/*",
